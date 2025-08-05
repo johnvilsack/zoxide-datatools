@@ -51,7 +51,9 @@ strip_quotes(){
 export_csv(){
   local output_file="zoxide-data.csv"
   local csv_options="--keep-uri"
+  local sort_output=false
   local temp_txt="/tmp/zoxide_export_$$.txt"
+  local temp_sorted="/tmp/zoxide_export_sorted_$$.txt"
   
   # Parse arguments
   while [[ $# -gt 0 ]]; do
@@ -64,10 +66,15 @@ export_csv(){
         csv_options="--keep-uri"
         shift
         ;;
+      --sort|-s)
+        sort_output=true
+        shift
+        ;;
       --help)
-        echo "Usage: $0 export [--simple|--keep-uri] [filename]"
+        echo "Usage: $0 export [--simple|--keep-uri|--sort] [filename]"
         echo "  --simple     Export to simple CSV (score,path)"
         echo "  --keep-uri   Export to full CSV with URIs (default)"
+        echo "  --sort       Sort entries hierarchically"
         echo "  filename     Output file (default: zoxide-data.csv)"
         return 0
         ;;
@@ -78,8 +85,8 @@ export_csv(){
     esac
   done
   
-  # Clean up temp file on exit
-  trap 'rm -f "$temp_txt" 2>/dev/null || true' RETURN
+  # Clean up temp files on exit
+  trap 'rm -f "$temp_txt" "$temp_sorted" 2>/dev/null || true' RETURN
   
   echo "Exporting zoxide database to CSV..."
   
@@ -89,21 +96,38 @@ export_csv(){
     return 1
   fi
   
-  local entry_count=$(wc -l < "$temp_txt" 2>/dev/null || echo 0)
+  # Step 2: Sort if requested
+  local source_file="$temp_txt"
+  if [[ "$sort_output" == true ]]; then
+    echo "Sorting entries hierarchically..."
+    if ! sort_hier "$temp_txt" "$temp_sorted"; then
+      echo "Error: Failed to sort data" >&2
+      return 1
+    fi
+    source_file="$temp_sorted"
+  fi
   
-  # Step 2: Convert to CSV
+  local entry_count=$(wc -l < "$source_file" 2>/dev/null || echo 0)
+  
+  # Step 3: Convert to CSV
   if [[ "$csv_options" == "--keep-uri" ]]; then
-    if ! paths_to_csv yes "$temp_txt" "$output_file"; then
+    if ! paths_to_csv yes "$source_file" "$output_file"; then
       echo "Error: Failed to convert to CSV" >&2
       return 1
     fi
-    echo "Exported $entry_count entries to $output_file (full CSV with URIs)"
+    local format_desc="full CSV with URIs"
   else
-    if ! paths_to_simple_csv "$temp_txt" "$output_file"; then
+    if ! paths_to_simple_csv "$source_file" "$output_file"; then
       echo "Error: Failed to convert to simple CSV" >&2
       return 1
     fi
-    echo "Exported $entry_count entries to $output_file (simple CSV)"
+    local format_desc="simple CSV"
+  fi
+  
+  if [[ "$sort_output" == true ]]; then
+    echo "Exported $entry_count entries to $output_file ($format_desc, sorted)"
+  else
+    echo "Exported $entry_count entries to $output_file ($format_desc)"
   fi
   
   echo

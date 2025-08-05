@@ -31,7 +31,7 @@ Command-line tools for managing your [zoxide](https://github.com/ajeetdsouza/zox
 #### Primary Commands
 ```bash
 # Export zoxide database to CSV for editing
-./zoxide-datatools.sh export [--simple|--keep-uri] [filename]
+./zoxide-datatools.sh export [--simple|--keep-uri|--sort] [filename]
 
 # Import edited CSV back to zoxide
 ./zoxide-datatools.sh import [--merge|--replace] [--dry-run] [filename]
@@ -57,11 +57,18 @@ Command-line tools for managing your [zoxide](https://github.com/ajeetdsouza/zox
 
 ## File Formats
 
-### Zoxide Native Format (`.txt`)
+### Zoxide Native Format (`.txt`) - Sorts by score
 ```
 5.0	/Users/foo/.local/zoxide
 12.5	/Users/foo/.local
 26.0	/Users/foo
+```
+
+### Zoxide Native Format (`.txt`) - Hierarchical sort
+```
+26.0	/Users/foo
+12.5	/Users/foo/.local
+5.0	/Users/foo/.local/zoxide
 ```
 
 ### Simple CSV Format (`.csv`) - **Most Popular**
