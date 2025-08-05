@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.2] - 2025-08-05
+- FIX: Unquoted CSV importing fixed
+
 ## [1.0.1-1] - 2025-08-05
 - sort added to help
 

@@ -60,6 +60,8 @@ echo "9. Testing Meta Export Function ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE export "$TESTDIR/TEST-META-export.csv" >/dev/null
 echo "10. Testing Meta Export with Simple Option ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE export --simple "$TESTDIR/TEST-META-simple.csv" >/dev/null
+echo "11. Testing Meta Export with Sort Option ($(elapsed_time))"
+$SCRIPTDIR/$SCRIPTFILE export --sort --simple "$TESTDIR/TEST-META-sorted.csv" >/dev/null
 echo "Meta functions complete"
 
 
@@ -70,17 +72,17 @@ cp "$SCRIPTDIR/sample-simple.csv" "$TESTDIR/TEST-12-sample-simple.csv"
 
 echo
 echo "Import & Backup Tests"
-echo "11. Testing Backup Function ($(elapsed_time))"
+echo "12. Testing Backup Function ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE backup >/dev/null
-echo "12. Testing Dry Run Import-File (Autojump) ($(elapsed_time))"
+echo "13. Testing Dry Run Import-File (Autojump) ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE import-file --dry-run "$TESTDIR/TEST-10-sample-autojump.txt" >/dev/null
-echo "13. Testing Dry Run Import-File (Z Format) ($(elapsed_time))"
+echo "14. Testing Dry Run Import-File (Z Format) ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE import-file --dry-run "$TESTDIR/TEST-11-sample-z.z" >/dev/null
-echo "14. Testing Dry Run Import-File (Simple CSV) ($(elapsed_time))"
+echo "15. Testing Dry Run Import-File (Simple CSV) ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE import-file --dry-run "$TESTDIR/TEST-12-sample-simple.csv" >/dev/null
-echo "15. Testing Meta Import Dry Run ($(elapsed_time))"
+echo "16. Testing Meta Import Dry Run ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE import --dry-run "$TESTDIR/TEST-META-export.csv" >/dev/null
-echo "16. Testing Restore Function ($(elapsed_time))"
+echo "17. Testing Restore Function ($(elapsed_time))"
 $SCRIPTDIR/$SCRIPTFILE restore >/dev/null
 
 echo

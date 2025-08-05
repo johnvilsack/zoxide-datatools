@@ -426,14 +426,26 @@ detect_format(){
       break
     fi
     
-    # Simple CSV format: "score","path" (exactly 2 fields)
+    # Simple CSV format: "score","path" (exactly 2 fields, quoted)
     if [[ "$line" =~ ^\"[^\"]*\",\"[^\"]*\"$ ]]; then
       format="simplecsv"
       break
     fi
     
-    # Full CSV format: starts with quoted score, has multiple comma-separated quoted fields
+    # Simple CSV format: score,path (exactly 2 fields, unquoted)
+    if [[ "$line" =~ ^[^,]+,[^,]+$ ]] && [[ $(echo "$line" | grep -o ',' | wc -l) -eq 1 ]]; then
+      format="simplecsv"
+      break
+    fi
+    
+    # Full CSV format: starts with quoted score, has multiple comma-separated quoted fields  
     if [[ "$line" =~ ^\"[^\"]*\",(\"[^\"]*\",){2,} ]]; then
+      format="fullcsv"
+      break
+    fi
+    
+    # Full CSV format: unquoted, has 3+ comma-separated fields starting with number
+    if [[ "$line" =~ ^[0-9]+(\.[0-9]+)?, ]] && [[ $(echo "$line" | grep -o ',' | wc -l) -ge 2 ]]; then
       format="fullcsv"
       break
     fi
