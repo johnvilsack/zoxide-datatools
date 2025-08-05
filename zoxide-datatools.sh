@@ -6,7 +6,7 @@ usage(){
 zoxide-datatools - Comprehensive zoxide database manager
 
 Main Commands:
-  $0 export       [--simple|--keep-uri] [filename]     Export to CSV for editing
+  $0 export       [--simple|--keep-uri|--sort] [filename]     Export to CSV for editing
   $0 import       [--merge|--replace] [filename]       Import edited CSV back
   
 Backup Management:
